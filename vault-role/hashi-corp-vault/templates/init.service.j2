@@ -1,0 +1,15 @@
+[Unit]
+Description=Vault
+Requires=network-online.target
+After=network-online.target
+[Service]
+Restart=on-failure
+PermissionsStartOnly=true
+ExecStartPre=/sbin/setcap 'cap_ipc_lock=+ep' /usr/bin/vault
+ExecStart=/usr/bin/vault server -config /etc/vault.d
+ExecReload=/bin/kill -HUP \$MAINPID
+KillSignal=SIGTERM
+User=vault
+Group=vault
+[Install]
+WantedBy=multi-user.target

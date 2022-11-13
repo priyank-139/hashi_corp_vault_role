@@ -1,0 +1,16 @@
+---
+# vars file for hashi-corp-vault 
+
+
+ vault_group: "vault"
+ vault_user: "vault"
+ vault_version: "1.12.1"
+ vault_download.dest: /tmp/vault_{{ vault_version }}_linux_amd64.zip
+ vault_checksum: "sha256:839fa81eacd250e0b0298e518751a792cd5d7194650af78cf5da74d7b7b1e5fb"
+ vault_install_prerequisites: 
+                          -  "unzip"
+                          -  "jq"  
+ kms: "c00b96b8-f1e3-4ad7-931e-592f26222d70"  
+ unseal_keys_dir_output: "/opt/unseal"
+ root_token_dir_output: "/opt/unseal"  
+ unseal_keys_dir_output_file_key-shares: "/opt/unseal/token.txt"  

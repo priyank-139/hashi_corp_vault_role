@@ -1,0 +1,39 @@
+---
+
+      - name: Create unseal keys directories
+        file:
+         path: "{{ unseal_keys_dir_output }}"
+         owner: root
+         group: root  
+         state: directory
+        
+
+      
+
+
+      - name: Create unseal keys file
+        file:
+         path: /opt/unseal/key.txt
+         state: touch
+         owner: root
+         group: root  
+        
+   
+
+          
+      - name: initialize vault 
+        shell: export VAULT_ADDR='http://127.0.0.1:8200'   
+
+
+      - name: Pause for 1 minutes to enable the vault service
+        ansible.builtin.pause:
+           minutes: 1
+
+
+
+      - name: initialize vault and storing key shares and root token
+        shell: |
+           export VAULT_ADDR=http://127.0.0.1:8200
+           vault operator init >> /opt/unseal/key.txt 
+    
+

@@ -1,0 +1,22 @@
+---
+# tasks file for hashi-corp-vault
+
+   
+  - name: vault task
+    include_tasks: user.yml
+
+  - name: vault task
+    include_tasks: prerequisites.yml
+
+
+
+  - name: vault task 
+    include_tasks: vault.yml
+
+
+  - name: copy conf. and service file to directories
+    include_tasks: directories.yml
+    
+  - name: unseal 
+    include_tasks: unseal.yml
+

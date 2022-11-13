@@ -1,0 +1,15 @@
+---
+
+
+
+
+
+   - name: Install prerequisites
+     package:
+      name: "{{ item }}"
+      update_cache: yes
+     with_items: "{{ vault_install_prerequisites }}"
+     become: yes
+    
+
+
