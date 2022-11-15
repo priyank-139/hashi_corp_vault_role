@@ -8,6 +8,12 @@ listener "tcp" {
   tls_disable = true
 }
 
+seal "awskms" {
+  kms_key_id = "{{ kms }}"
+  region = "us-west-2"
+}
+
+
 api_addr = "http://{{ ansible_host }}:8200"
 cluster_addr = "http://{{ ansible_eth0.ipv4.address }}:8201"
 disable_mlock = true

@@ -10,7 +10,7 @@
  vault_install_prerequisites: 
                           -  "unzip"
                           -  "jq"  
- kms: "c00b96b8-f1e3-4ad7-931e-592f26222d70"  
+ kms: "5056bdee-8ce0-4b75-9201-ce750b603d1f"  
  unseal_keys_dir_output: "/opt/unseal"
  root_token_dir_output: "/opt/unseal"  
  unseal_keys_dir_output_file_key-shares: "/opt/unseal/token.txt"  
