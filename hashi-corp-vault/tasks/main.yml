@@ -1,0 +1,22 @@
+---
+# tasks file for hashi-corp-vault
+
+   
+  - name: creating vault user
+    include_tasks: user.yml
+
+
+
+
+
+
+  - name: installing vault 
+    include_tasks: vault.yml
+
+
+  - name: creating directories for vault 
+    include_tasks: vault_directories.yml
+    
+  - name: auto unseal vault and creating cluster
+    include_tasks: unseal.yml
+

@@ -1,0 +1,67 @@
+--- 
+  
+
+      - name: Create unseal directories
+        file:
+          path: "{{ unseal_keys_dir_output }}"
+          owner: "{{ root_user }}"
+          group: "{{ root_group }}"
+          state: directory
+        
+
+      
+
+
+      - name: Create unseal directories
+        file:
+         path: /opt/unseal/key.txt
+         state: touch
+         owner: "{{ root_user  }}"
+         group: "{{ root_group }}"  
+        
+   
+
+
+      - name: Create a directory if it does not exist
+        ansible.builtin.file:
+         path: /opt/vault/data
+         state: directory
+         mode: '0755'
+         owner: "{{ vault_user }}"
+         group: "{{ vault_group }}"
+      
+      - name: Create a directory vault.d
+        ansible.builtin.file:
+         path: /etc/vault.d
+         state: directory
+         owner: "{{ root_user }}"
+         group: "{{ root_group }}"  
+         mode: '0755'
+
+
+      - name: config file
+        ansible.builtin.template:
+           src: config.hcl.j2
+           dest: /etc/vault.d/vault.hcl
+           owner: "{{ root_user }}"
+           group: "{{ root_group }}"
+           mode: '0644'     
+
+      - name: Copy systemd init file
+        ansible.builtin.template:
+           src: init.service.j2 
+           dest: /etc/systemd/system/vault.service
+           owner: "{{ vault_user }}"
+           group: "{{ vault_group }}"
+           mode: '0644'  
+           
+
+      - name: vault service
+        service:
+          name: vault
+          state: started
+          enabled: yes  
+
+
+            # - name: start vault in the background 
+            # shell: nohup vault server -config=/etc/vault.d/vault.hcl &

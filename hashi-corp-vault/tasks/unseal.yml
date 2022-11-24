@@ -1,0 +1,82 @@
+---
+
+    
+
+
+
+      - name: initialize vault and storing key shares and root token
+        shell: |
+           export VAULT_ADDR=http://127.0.0.1:8200
+           vault operator init >> /opt/unseal/key.txt 
+        when: inventory_hostname_short == "node1"
+
+      - name: Pause for 2 seconds to generate key shares and root token
+        ansible.builtin.pause:
+         seconds: 10
+
+      - name: initialize vault and storing key shares and root token
+        shell: |
+           VAULT_TOKEN=$(awk '/Initial Root Token/ {print $4}' /opt/unseal/key.txt)
+           export VAULT_ADDR=http://127.0.0.1:8200
+           export VAULT_TOKEN=$VAULT_TOKEN
+        when: inventory_hostname_short == "node1"
+
+
+      - name: fetch key shares and root token file from remote to local
+        fetch:
+          src: /opt/unseal/key.txt
+          dest: /tmp/vault_secrets #{{ inventory_hostname == 'node2' }}/opt/unseal/key.txt
+          flat: true
+        when: inventory_hostname_short == 'node1'
+
+      - name: Copy root token file on cluster nodes
+        ansible.builtin.copy:
+           src: /tmp/vault_secrets
+           dest: /opt/unseal/key.txt
+           owner: root
+           group: root
+           mode: '0644'   
+
+       
+    
+      
+      - set_fact:
+         leader_pvt_ip: "{{ ansible_eth0.ipv4.address }}"
+           
+        when: inventory_hostname_short == 'node1'
+        run_once: true
+
+
+
+      - set_fact:
+         leader_pub_ip: "{{ ansible_host }}"
+
+        when: inventory_hostname_short == 'node1'
+        run_once: true
+    
+      - name: Pause for 2 seconds to generate key shares and root token
+        ansible.builtin.pause:
+         seconds: 5
+
+
+      - name: adding cluster node2 
+        shell: |
+           VAULT_TOKEN=$(awk '/Initial Root Token/ {print $4}' /opt/unseal/key.txt)
+           export VAULT_ADDR=http://127.0.0.1:8200
+           export VAULT_TOKEN=$VAULT_TOKEN
+           vault operator raft join http://{{ leader_pvt_ip }}:8200
+        when: inventory_hostname_short == 'node2' 
+        
+ 
+
+
+      - name: adding cluster node3
+        shell: |
+           VAULT_TOKEN=$(awk '/Initial Root Token/ {print $4}' /opt/unseal/key.txt)
+           export VAULT_ADDR=http://127.0.0.1:8200
+           export VAULT_TOKEN=$VAULT_TOKEN
+           vault operator raft join http://{{ leader_pvt_ip }}:8200
+        when: inventory_hostname_short == 'node3'
+
+
+
